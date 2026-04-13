@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>京剧角色人格测试</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Microsoft YaHei", sans-serif;
+        }
+        body {
+            background-color: #f5f0e6;
+            padding: 20px;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 0 15px rgba(0,0,0,0.1);
+        }
+        .title {
+            text-align: center;
+            font-size: 28px;
+            color: #8b0000;
+            margin-bottom: 20px;
+        }
+        .question-box {
+            margin: 25px 0;
+            display: none;
+        }
+        .question-box.active {
+            display: block;
+        }
+        .question {
+            font-size: 20px;
+            margin-bottom: 15px;
+            color: #333;
+        }
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .option {
+            padding: 12px 20px;
+            background: #f8f3eb;
+            border: 2px solid #d4b598;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            z-index: 1;
+            position: relative;
+        }
+        .option:hover {
+            background: #d4b598;
+            color: white;
+        }
+        .btn-box {
+            text-align: center;
+            margin-top: 30px;
+        }
+        button {
+            padding: 10px 30px;
+            font-size: 16px;
+            background: #8b0000;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            margin: 0 10px;
+        }
+        button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        .result-box {
+            display: none;
+            text-align: center;
+        }
+        .result-title {
+            font-size: 24px;
+            color: #8b0000;
+            margin-bottom: 20px;
+        }
+        .role-avatar {
+            width: 220px;
+            height: 280px;
+            margin: 0 auto 20px;
+            border: 3px solid #d4b598;
+            border-radius: 10px;
+            object-fit: cover;
+            background: #f8f3eb;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #8b0000;
+            font-size: 14px;
+        }
+        .role-avatar::after {
+            content: attr(alt);
+        }
+        .role-name {
+            font-size: 26px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 10px;
+        }
+        .role-type {
+            font-size: 18px;
+            color: #666;
+            margin-bottom: 10px;
+        }
+        .role-play {
+            font-size: 16px;
+            color: #8b0000;
+            margin-bottom: 15px;
+        }
+        .role-slogan {
+            font-size: 20px;
+            font-style: italic;
+            color: #555;
+            margin-bottom: 20px;
+        }
+        .role-desc {
+            text-align: left;
+            line-height: 1.8;
+            color: #444;
+            font-size: 16px;
+        }
+        .match-info {
+            margin: 15px 0;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="title">京剧角色人格测试</h1>
+        
+        <div id="quizBox">
+            <div class="question-box active" id="q1">
+                <div class="question">1. 如果和朋友在对“郭派京剧”上发生分歧，你会：</div>
+                <div class="options">
+                    <div class="option" data-dim="1" data-score="1">A. 分析郭老师的作品的特点，在对比中表明观点</div>
+                    <div class="option" data-dim="1" data-score="2">B. 直接表达自己的观点：“诶！”</div>
+                </div>
+            </div>
+            <div class="question-box" id="q2">
+                <div class="question">2. 假如你在演唱《锁麟囊》“这才是”唱段时，为了表达情感你会：</div>
+                <div class="options">
+                    <div class="option" data-dim="1" data-score="1">A. 注重细节，世界名曲我可得认真唱！</div>
+                    <div class="option" data-dim="1" data-score="2">B. 流露情绪，真的情绪才是最好的！</div>
+                </div>
+            </div>
+            <div class="question-box" id="q3">
+                <div class="question">3. 如果和你搭戏的演员在舞台上发生了失误：</div>
+                <div class="options">
+                    <div class="option" data-dim="2" data-score="1">A. 放过失误，不打乱整体程式节奏</div>
+                    <div class="option" data-dim="2" data-score="2">B. 立刻补救，灵活调整身段念白</div>
+                </div>
+            </div>
+            <div class="question-box" id="q4">
+                <div class="question">4. 假如你去编排一台新编戏，你的角色会是：</div>
+                <div class="options">
+                    <div class="option" data-dim="2" data-score="1">A. 按照程式和传统，不过度添加其他元素</div>
+                    <div class="option" data-dim="2" data-score="2">B. 灵活创作，加入音乐剧、舞剧等诸多艺术形式</div>
+                </div>
+            </div>
+            <div class="question-box" id="q5">
+                <div class="question">5. 面对“规矩”和“程式”的传统，你的选择是：</div>
+                <div class="options">
+                    <div class="option" data-dim="3" data-score="1">A. 坚守老理儿，才能传承发扬国粹！</div>
+                    <div class="option" data-dim="3" data-score="2">B. 不被程式捆绑，适应市场才能传下去！</div>
+                </div>
+            </div>
+            <div class="question-box" id="q6">
+                <div class="question">6. 与其他戏迷交流相处，你更偏向：</div>
+                <div class="options">
+                    <div class="option" data-dim="3" data-score="1">A. 坚持自己的派别，保持恰当的相处分寸</div>
+                    <div class="option" data-dim="3" data-score="2">B. 借鉴他人的派别，不拘门派之见，快速打成一片</div>
+                </div>
+            </div>
+            <div class="question-box" id="q7">
+                <div class="question">7. 戏迷朋友练戏遇瓶颈求助，你会：</div>
+                <div class="options">
+                    <div class="option" data-dim="4" data-score="1">A. 慢慢引导，耐心说明但是不得罪他人</div>
+                    <div class="option" data-dim="4" data-score="2">B. 直言短板，倾囊相授，全力帮其突破瓶颈</div>
+                </div>
+            </div>
+            <div class="question-box" id="q8">
+                <div class="question">8. 你的自身气质更贴近京剧里的：</div>
+                <div class="options">
+                    <div class="option" data-dim="4" data-score="1">A. 文行雅致，自带书卷气，适配长衫、素衣行头</div>
+                    <div class="option" data-dim="4" data-score="2">B. 武行刚健，自带侠气，适配靠甲、短打行头</div>
+                </div>
+            </div>
+            <div class="question-box" id="q9">
+                <div class="question">9. 假如演唱《空城计》“我正在城楼观山景”选段：</div>
+                <div class="options">
+                    <div class="option" data-dim="1" data-score="1">A. 重于流派规矩，不违传统</div>
+                    <div class="option" data-dim="1" data-score="2">B. 重于自身理解，灵活创新</div>
+                </div>
+            </div>
+            <div class="question-box" id="q10">
+                <div class="question">10. 接触陌生流派的剧目时，你会：</div>
+                <div class="options">
+                    <div class="option" data-dim="1" data-score="1">A. 先不上手，慢慢揣摩流派精髓</div>
+                    <div class="option" data-dim="1" data-score="2">B. 直接上手，快速融入并尝试演绎</div>
+                </div>
+            </div>
+            <div class="question-box" id="q11">
+                <div class="question">11. 如果扮演戏中《走麦城》的关公，你的演绎态度是：</div>
+                <div class="options">
+                    <div class="option" data-dim="2" data-score="1">A. 克制表达，将遗憾藏于细节，不刻意煽情</div>
+                    <div class="option" data-dim="2" data-score="2">B. 坦然诠释，将遗憾流露言表，共情戏中角色</div>
+                </div>
+            </div>
+            <div class="question-box" id="q12">
+                <div class="question">12. 你更偏爱演绎的戏剧情境是：</div>
+                <div class="options">
+                    <div class="option" data-dim="2" data-score="1">A. 袍带戏《大保国》文人雅聚、家国坚守，节奏舒缓的文戏</div>
+                    <div class="option" data-dim="2" data-score="2">B. 短打戏《响马传》江湖侠义、沙场征战，张力拉满的武戏</div>
+                </div>
+            </div>
+            <div class="question-box" id="q13">
+                <div class="question">13. 看到戏中违背戏理或不公的情节，你会：</div>
+                <div class="options">
+                    <div class="option" data-dim="3" data-score="1">A. 私下梳理戏理，慢慢揣摸，不事张扬</div>
+                    <div class="option" data-dim="3" data-score="2">B. 直言戏理漏洞，公开表明立场，绝不妥协</div>
+                </div>
+            </div>
+            <div class="question-box" id="q14">
+                <div class="question">14. 打磨角色身段/唱腔时，你更注重：</div>
+                <div class="options">
+                    <div class="option" data-dim="3" data-score="1">A. 遵从程式，做到形神兼备</div>
+                    <div class="option" data-dim="3" data-score="2">B. 遵从感觉，抓住核心特质，灵活运用程式</div>
+                </div>
+            </div>
+            <div class="question-box" id="q15">
+                <div class="question">15. 与同仁因如何行腔发音产生争执，你会：</div>
+                <div class="options">
+                    <div class="option" data-dim="4" data-score="1">A. 以录音为据，耐心沟通，避免正面争执</div>
+                    <div class="option" data-dim="4" data-score="2">B. 遵从本心坚守自身对戏情的理解，毫不退让</div>
+                </div>
+            </div>
+            <div class="question-box" id="q16">
+                <div class="question">16. 你演绎角色时，更喜欢选择的是是：</div>
+                <div class="options">
+                    <div class="option" data-dim="4" data-score="1">A. 沉稳内敛，心思细腻的薛湘灵</div>
+                    <div class="option" data-dim="4" data-score="2">B. 灵动洒脱，敢闯敢试的红娘</div>
+                </div>
+            </div>
+
+            <div class="btn-box">
+                <button id="prevBtn" disabled>上一题</button>
+                <button id="nextBtn">下一题</button>
+                <button id="submitBtn" style="display: none;">提交测试</button>
+            </div>
+        </div>
+
+        <div id="resultBox" class="result-box">
+            <h2 class="result-title">你的专属京剧角色</h2>
+            <img id="roleAvatar" class="role-avatar" src="" alt="角色示意图">
+            <div class="role-name" id="roleName"></div>
+            <div class="role-type" id="roleType"></div>
+            <div class="role-play" id="rolePlay"></div>
+            <div class="role-slogan" id="roleSlogan"></div>
+            <div class="match-info">
+                匹配度：<span id="matchRate"></span> | 契合度：<span id="hitRate"></span>
+            </div>
+            <div class="role-desc" id="roleDesc"></div>
+            <div class="btn-box">
+                <button id="restartBtn">重新测试</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const roleMap = [
+                {dim1:1,dim2:1,dim3:1,dim4:1,code:"SSAN",chName:"苏三",name:"张派青衣·苏三",type:"旦行·张派",play:"《玉堂春》",avatar:"https://img.cdn1.vip/i/69dcd557ca9bd_1776080215.webp",slogan:"苏三离了洪洞县，将身来在了大街前",matchRate:"72%",hit:"7/15",desc:"张派小众青衣角色，出自《玉堂春》张派小众演绎，唱腔清亮婉转，水袖功精湛。苏三温婉坚韧、内敛细腻，身陷囹圄却始终恪守本心、坚守清白，细节刻画极具张力，完美契合张派“清亮端庄”的风格，是青衣行中“温婉坚守”的小众代表。你骨子里带着青衣的清雅与坚韧，看似柔弱，实则内心坚定，坚守底线不妥协。"},
+                {dim1:1,dim2:1,dim3:1,dim4:2,code:"XUXI",chName:"许仙",name:"言派老生·许仙",type:"生行·言派",play:"《白蛇传》",avatar:"https://img.cdn1.vip/i/69dcd556122fb_1776080214.webp",slogan:"适才扫墓灵隐去，归来风雨忽迷离。",matchRate:"75%",hit:"8/15",desc:"言派小众老生角色，出自《白蛇传》言派演绎，唱腔婉转悠扬，气质清雅内敛。许仙温和内敛、心思细腻，既恪守人伦之规，又随心追随白素贞，不被世俗束缚，性格鲜活立体，尽显言派“婉转细腻”的表演风格，是老生行中“温润深情”的小众典范。你骨子里带着老生的温润与通透，重情重义，既守规矩又不失随性。"},
+                {dim1:1,dim2:1,dim3:2,dim4:1,code:"YUJI",chName:"虞姬",name:"梅派花衫·虞姬",type:"旦行·梅派",play:"《霸王别姬》",avatar:"https://img.cdn1.vip/i/69dcd561df653_1776080225.webp",slogan:"恨只恨无道秦把生灵涂炭，只害得众百姓困苦颠连。",matchRate:"78%",hit:"8/15",desc:"梅派小众花衫角色，出自《霸王别姬》梅派小众演绎，水袖细腻灵动，唱腔温婉动人。虞姬内敛深情、心思细腻，能灵活应对战场变故，始终坚守与项羽的情义，尽责相伴直至生命最后一刻，完美诠释梅派“以情带技”的特点，是花衫行中“深情尽责”的小众代表。你骨子里带着花衫的温婉与担当，重情重义，始终坚守身边之人。"},
+                {dim1:1,dim2:1,dim3:2,dim4:2,code:"HONG",chName:"红娘",name:"荀派花旦·红娘",type:"旦行·荀派",play:"《红娘》",avatar:"https://img.cdn1.vip/i/69dcd565ecff0_1776080229.webp",slogan:"小姐呀小姐你多风采，君瑞呀君瑞你大雅才。",matchRate:"70%",hit:"7/15",desc:"荀派小众花旦角色，出自《红娘》荀派小众演绎，身段灵动俏皮，念白婉转自然。红娘内敛通透、心思细腻，灵活促成张生与崔莺莺的姻缘，随性洒脱却不失分寸，尽显荀派“质朴灵动”的风格，是花旦行中“灵动通透”的小众典范。你骨子里带着花旦的鲜活与聪慧，善于观察，随性而为却有自己的底线。"},
+                {dim1:1,dim2:2,dim3:1,dim4:1,code:"YANGJ",chName:"杨继业",name:"奚派老生·杨继业",type:"生行·奚派",play:"《碰碑》",avatar:"https://img.cdn1.vip/i/69dcd55a194db_1776080218.webp",slogan:"令公来到此，卸甲又丢盔",matchRate:"73%",hit:"7/15",desc:"奚派小众老生角色，出自《碰碑》，唱腔清雅醇厚，气质内敛沉稳。杨继业直白刚正、内敛坚韧，恪守家国规矩，始终尽责守护杨家将，直至战死沙场、碰碑明志，悲壮感拉满，尽显奚派“清雅庄重”的风格，是老生行中“忠勇尽责”的小众代表。你骨子里带着老生的刚正与担当，责任心极强，为坚守信念不惜全力以赴。"},
+                {dim1:1,dim2:2,dim3:1,dim4:2,code:"LINCH",chName:"林冲",name:"杨派老生·林冲",type:"生行·杨派",play:"《野猪林》",avatar:"https://img.cdn1.vip/i/69dcd5578ebde_1776080215.webp",slogan:"彤云低锁山河暗，疏林冷落尽凋残。",matchRate:"76%",hit:"8/15",desc:"杨派小众老生角色，出自《野猪林》，唱腔醇厚绵长，内敛隐忍。林冲直白刚正、内敛坚韧，恪守江湖规矩，却在遭受不公时随性反抗，不被压迫束缚，性格层次鲜明，尽显杨派“醇厚沉稳”的表演风格，是老生行中“刚正洒脱”的小众代表。你骨子里带着老生的隐忍与刚正，守得住底线，也敢反抗不公。"},
+                {dim1:1,dim2:2,dim3:2,dim4:1,code:"MUGY",chName:"穆桂英",name:"刀马旦·穆桂英",type:"旦行·刀马旦",play:"《穆桂英挂帅》",avatar:"https://img.cdn1.vip/i/69dcd559620bb_1776080217.webp",slogan:"猛听地金鼓响画角声震，唤起我破天门壮志凌云",matchRate:"74%",hit:"7/15",desc:"刀马旦小众角色，出自《穆桂英挂帅》小众流派演绎，文武双全，身手利落。穆桂英内敛沉稳、说话直白，能灵活调度军队，始终尽责守护边关，巾帼不让须眉，既有女将的刚健，又有女子的柔情，是刀马旦行中“巾帼担当”的小众典范。你骨子里带着刀马旦的飒爽与责任心，机敏果敢，能担起重任。"},
+                {dim1:1,dim2:2,dim3:2,dim4:2,code:"YANGB",chName:"杨波",name:"须生·杨波",type:"生行·须生",play:"《二进宫》",avatar:"https://img.cdn1.vip/i/69dcd5870cefa_1776080263.webp",slogan:"望国太开恩将臣放，落一个清闲自在散淡安康。",matchRate:"71%",hit:"7/15",desc:"须生小众角色，出自《二进宫》，唱腔醇厚沉稳，内敛大气。杨波直白果敢、内敛机敏，能灵活辅佐幼主，随性坚守忠义，不墨守成规，兼具机敏与担当，是须生行中“机敏洒脱”的小众代表。你骨子里带着须生的沉稳与机敏，善于应变，既能坚守忠义，又能随性而为。"},
+                {dim1:2,dim2:1,dim3:1,dim4:1,code:"XUYA",chName:"徐延昭",name:"裘派铜锤花脸·徐延昭",type:"净行·裘派",play:"《二进宫》",avatar:"https://img.cdn1.vip/i/69dcd58cbfa70_1776080268.webp",slogan:"你今要让江山与奸佞，岂容贼子乱龙廷！",matchRate:"77%",hit:"8/15",desc:"裘派小众正净角色，出自《二进宫》，唱腔雄浑有力，气场外放。徐延昭心思细腻、刚正不阿，恪守君臣规矩，始终尽责辅佐幼主，不徇私情，尽显裘派“雄浑庄重”的风格，是净行中“刚正尽责”的小众代表。你骨子里带着净行的气场与担当，公正无私，责任心极强。"},
+                {dim1:2,dim2:1,dim3:1,dim4:2,code:"LIUL",chName:"刘兰芝",name:"张派青衣·刘兰芝",type:"旦行·张派",play:"《孔雀东南飞》",avatar:"https://img.cdn1.vip/i/69dcd554ed68f_1776080212.webp",slogan:"风萧萧，雨纷纷，透骨寒，思前情，想后事，我好不忧烦。",matchRate:"71%",hit:"7/15",desc:"张派小众青衣角色，出自《孔雀东南飞》，唱腔清亮婉转，气场外放。刘兰芝心思细腻、气场温婉，恪守夫妻情义，却也随性坚守本心，不被封建束缚，悲情又洒脱，尽显张派“清雅大气”的风格，是青衣行中“忠贞洒脱”的小众代表。你骨子里带着青衣的温婉与决绝，重情重义，敢于坚守自我。"},
+                {dim1:2,dim2:1,dim3:2,dim4:1,code:"ZHANG",chName:"张飞",name:"架子花脸·张飞",type:"净行·架子花脸",play:"《芦花荡》",avatar:"https://img.cdn1.vip/i/69dcd559a250b_1776080217.webp",slogan:"俺这里，丈八矛翻江搅海，管教他，梦魂中见俺也怕！",matchRate:"79%",hit:"8/15",desc:"架子花脸小众角色，出自《芦花荡》小众流派演绎，工架豪放，气场外放。张飞心思细腻、性格粗豪，能灵活作战，始终尽责辅佐刘备，粗中有细，尽显架子花脸“豪放灵动”的风格，是净行中“忠勇豪放”的小众代表。你骨子里带着净行的豪放与担当，看似粗犷，实则心思细腻、责任心强。"},
+                {dim1:2,dim2:1,dim3:2,dim4:2,code:"SUNY",chName:"孙玉娇",name:"花旦·孙玉娇",type:"旦行·花旦",play:"《拾玉镯》",avatar:"https://img.cdn1.vip/i/69dcd5820b87a_1776080258.webp",slogan:"闲无事独自里针黹绣做，门儿外好春光日暖风和。",matchRate:"73%",hit:"7/15",desc:"花旦小众角色，出自《拾玉镯》，身段灵动细腻，气场外放。孙玉娇细腻灵动、活泼可爱，能灵活应对情感变化，随性展露少女心事，不做作、不刻意，是花旦行中“鲜活灵动”的小众代表。你骨子里带着花旦的鲜活与洒脱，天真烂漫，敢于表达自己的心意。"},
+                {dim1:2,dim2:2,dim3:1,dim4:1,code:"HUANG",chName:"黄忠",name:"谭派老生·黄忠",type:"生行·谭派",play:"《定军山》",avatar:"https://img.cdn1.vip/i/69dcd58b5135d_1776080267.webp",slogan:"这一封书信来得巧，天助黄忠成功劳",matchRate:"76%",hit:"8/15",desc:"谭派小众老生角色，出自《定军山》，唱腔苍劲有力，气场外放。黄忠说话直白、勇猛刚健，恪守军规，始终尽责征战沙场，老当益壮、英气不减，尽显谭派“苍劲雄浑”的风格，是老生行中“老当益壮”的小众代表。你骨子里带着老生的刚猛与责任心，不服老、敢担当，始终坚守自己的职责。"},
+                {dim1:2,dim2:2,dim3:1,dim4:2,code:"ZHAOY",chName:"赵云",name:"长靠武生·赵云",type:"生行·武生",play:"《长坂坡》",avatar:"https://img.cdn1.vip/i/69dcd585d5214_1776080261.webp",slogan:"长坂坡救主显英豪，七进七出逞逍遥。",matchRate:"74%",hit:"7/15",desc:"长靠武生小众角色，出自《长坂坡》小众流派演绎，扎靠大气，武打利落。赵云气场外放、说话直白，恪守忠义之规，随性征战沙场，勇猛洒脱、忠心耿耿，兼具武将的刚健与侠义，是武生行中“忠义洒脱”的小众典范。你骨子里带着武生的勇猛与洒脱，重情重义，敢闯敢拼。"},
+                {dim1:2,dim2:2,dim3:2,dim4:1,code:"GAOCH",chName:"高宠",name:"长靠武生·高宠",type:"生行·武生",play:"《挑滑车》",avatar:"https://img.cdn1.vip/i/69dcd55faafa2_1776080223.webp",slogan:"看前面黑洞洞定是贼巢，俺不杀他他也不饶。",matchRate:"78%",hit:"8/15",desc:"长靠武生小众角色，出自《挑滑车》，扎靠挺拔，枪法精湛，气场外放。高宠说话直白、勇猛果敢，能灵活作战，始终尽责保家卫国，最终悲壮殉国，尽显武生“忠勇悲壮”的风格，是武生行中“悲壮英雄”的小众典范。你骨子里带着武生的刚勇与责任心，为了信念，不惜全力以赴。"},
+                {dim1:2,dim2:2,dim3:2,dim4:2,code:"LUOCH",chName:"罗成",name:"叶派小生·罗成",type:"生行·叶派",play:"《罗成叫关》",avatar:"https://img.cdn1.vip/i/69dcd5803af77_1776080256.webp",slogan:"勒马停蹄站城道，银枪插在马鞍鞒。",matchRate:"72%",hit:"7/15",desc:"叶派小众小生角色，出自《罗成叫关》，翎子功精湛，唱腔清亮，气场外放。罗成说话直白、桀骜不驯，能灵活作战，随性而为，重情重义却也孤傲决绝，最终悲壮殉国，尽显叶派“刚健洒脱”的表演风格，是小生行中“少年英雄”的小众代表。你骨子里带着小生的英气与桀骜，洒脱不羁，敢爱敢恨。"}
+            ];
+
+            let currentQuestion = 1;
+            const totalQuestions = 16;
+            let dimScores = { dim1: 0, dim2: 0, dim3: 0, dim4: 0 };
+            let dimCount = { dim1: 0, dim2: 0, dim3: 0, dim4: 0 };
+
+            const prevBtn = document.getElementById('prevBtn');
+            const nextBtn = document.getElementById('nextBtn');
+            const submitBtn = document.getElementById('submitBtn');
+            const restartBtn = document.getElementById('restartBtn');
+            const quizBox = document.getElementById('quizBox');
+            const resultBox = document.getElementById('resultBox');
+
+            document.querySelectorAll('.option').forEach(option => {
+                option.addEventListener('click', function() {
+                    const dim = `dim${this.dataset.dim}`;
+                    const score = parseInt(this.dataset.score);
+                    
+                    const activeOption = this.parentElement.querySelector('.option.active');
+                    if (activeOption) {
+                        dimScores[dim] -= parseInt(activeOption.dataset.score);
+                        dimCount[dim]--;
+                    }
+                    dimScores[dim] += score;
+                    dimCount[dim]++;
+                    
+                    this.parentElement.querySelectorAll('.option').forEach(opt => {
+                        opt.style.background = '#f8f3eb';
+                        opt.style.color = 'inherit';
+                        opt.classList.remove('active');
+                    });
+                    this.style.background = '#d4b598';
+                    this.style.color = 'white';
+                    this.classList.add('active');
+                });
+            });
+
+            nextBtn.addEventListener('click', () => {
+                const currentOptions = document.querySelectorAll(`#q${currentQuestion} .option`);
+                const hasActive = Array.from(currentOptions).some(opt => opt.classList.contains('active'));
+                if (!hasActive) {
+                    alert('请选择一个选项后再继续');
+                    return;
+                }
+
+                document.getElementById(`q${currentQuestion}`).classList.remove('active');
+                currentQuestion++;
+                document.getElementById(`q${currentQuestion}`).classList.add('active');
+                prevBtn.disabled = false;
+                if(currentQuestion === totalQuestions) {
+                    nextBtn.style.display = 'none';
+                    submitBtn.style.display = 'inline-block';
+                }
+            });
+
+            prevBtn.addEventListener('click', () => {
+                document.getElementById(`q${currentQuestion}`).classList.remove('active');
+                currentQuestion--;
+                document.getElementById(`q${currentQuestion}`).classList.add('active');
+                nextBtn.style.display = 'inline-block';
+                submitBtn.style.display = 'none';
+                if(currentQuestion === 1) prevBtn.disabled = true;
+            });
+
+            submitBtn.addEventListener('click', () => {
+                const lastOptions = document.querySelectorAll(`#q${totalQuestions} .option`);
+                const hasActive = Array.from(lastOptions).some(opt => opt.classList.contains('active'));
+                if (!hasActive) {
+                    alert('请选择最后一题的选项后再提交');
+                    return;
+                }
+
+                const userAnswers = {
+                    dim1: dimCount.dim1 > 0 ? Math.round(dimScores.dim1 / dimCount.dim1) : 1,
+                    dim2: dimCount.dim2 > 0 ? Math.round(dimScores.dim2 / dimCount.dim2) : 1,
+                    dim3: dimCount.dim3 > 0 ? Math.round(dimScores.dim3 / dimCount.dim3) : 1,
+                    dim4: dimCount.dim4 > 0 ? Math.round(dimScores.dim4 / dimCount.dim4) : 1
+                };
+                const matchRole = roleMap.find(role => 
+                    role.dim1 === userAnswers.dim1 &&
+                    role.dim2 === userAnswers.dim2 &&
+                    role.dim3 === userAnswers.dim3 &&
+                    role.dim4 === userAnswers.dim4
+                ) || roleMap[0];
+                showResult(matchRole);
+            });
+
+            function showResult(role) {
+                quizBox.style.display = 'none';
+                resultBox.style.display = 'block';
+                const avatarImg = document.getElementById('roleAvatar');
+                avatarImg.onerror = function() {
+                    this.src = '';
+                };
+                avatarImg.src = role.avatar;
+                document.getElementById('roleName').textContent = role.name;
+                document.getElementById('roleType').textContent = role.type;
+                document.getElementById('rolePlay').textContent = role.play;
+                document.getElementById('roleSlogan').textContent = role.slogan;
+                document.getElementById('matchRate').textContent = role.matchRate;
+                document.getElementById('hitRate').textContent = role.hit;
+                document.getElementById('roleDesc').textContent = role.desc;
+            }
+
+            restartBtn.addEventListener('click', () => {
+                currentQuestion = 1;
+                dimScores = { dim1: 0, dim2: 0, dim3: 0, dim4: 0 };
+                dimCount = { dim1: 0, dim2: 0, dim3: 0, dim4: 0 };
+                document.querySelectorAll('.option').forEach(opt => {
+                    opt.style.background = '#f8f3eb';
+                    opt.style.color = 'inherit';
+                    opt.classList.remove('active');
+                });
+                prevBtn.disabled = true;
+                nextBtn.style.display = 'inline-block';
+                submitBtn.style.display = 'none';
+                resultBox.style.display = 'none';
+                quizBox.style.display = 'block';
+                document.querySelectorAll('.question-box').forEach(box => box.classList.remove('active'));
+                document.getElementById('q1').classList.add('active');
+            });
+        });
+    </script>
+</body>
+</html>
